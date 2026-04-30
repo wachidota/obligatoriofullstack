@@ -10,7 +10,7 @@ import {
     getCapitulosByLibro,
     getReviewsByLibro
 } from "../controllers/libroController.js";
-
+import { useGemini25Flash } from "../controllers/aiController.js";
 import { validateBodyMiddleware } from "../middlewares/validateBody.middleware.js";
 import {
     createLibroSchema,
@@ -57,5 +57,5 @@ router.delete("/:id", deleteLibro);
 router.get("/:id/promedio-calificaciones", getPromedioCalificaciones);
 router.get("/:id/capitulos", getCapitulosByLibro);
 router.get("/:id/reviews", getReviewsByLibro);
-
+router.post("/sugerir-categoria", useGemini25Flash);
 export default router;

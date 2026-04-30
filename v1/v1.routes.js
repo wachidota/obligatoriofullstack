@@ -14,6 +14,7 @@ const Router = express.Router({mergeParams: true});
 Router.use('/auth', authRoutes);
 
 
+
 Router.use(authorizationMiddleware);
 //rutas protegidas
 Router.use('/categorias', categoriaRoutes);
@@ -22,5 +23,6 @@ Router.use('/capitulos', capituloRoutes);
 Router.use('/comentarios', comentarioRoutes);
 Router.use('/reviews', reviewRoutes);
 Router.use('/usuarios', usuarioRoutes);
+
 
 export default Router;
