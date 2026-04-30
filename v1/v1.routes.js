@@ -7,6 +7,7 @@ import capituloRoutes from "./routes/capituloRoutes.js";
 import comentarioRoutes from "./routes/comentarioRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import usuarioRoutes from "./routes/UsuarioRoutes.js";
+import router from "./routes/LibroRoutes.js";
 
 const Router = express.Router({mergeParams: true});
 
@@ -23,6 +24,7 @@ Router.use('/capitulos', capituloRoutes);
 Router.use('/comentarios', comentarioRoutes);
 Router.use('/reviews', reviewRoutes);
 Router.use('/usuarios', usuarioRoutes);
+router.use('/uploads', uploadRoutes);
 
 
 export default Router;
