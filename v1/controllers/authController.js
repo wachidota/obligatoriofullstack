@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {
     registrarUsuarioService,
@@ -10,12 +9,10 @@ export const registrarUsuario = async (req, res, next) => {
     try {
         const { email, password, nombre } = req.validatedBody || req.body;
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
+        // Pasar la contraseña en texto plano al service
         const usuario = await registrarUsuarioService({
             email,
-            password: hashedPassword,
+            password,
             nombre
         });
 
@@ -41,28 +38,17 @@ export const registrarUsuario = async (req, res, next) => {
 export const loginUsuario = async (req, res, next) => {
     try {
         const { email, password } = req.validatedBody || req.body;
+        const result = await loginUsuarioService({ email, password });
 
-        // Buscar usuario
-        const usuario = await loginUsuarioService(email);
-
-        if (!usuario) {
+        if (!result.success) {
             return next({
                 status: 401,
-                message: "Credenciales inválidas"
+                message: result.message
             });
         }
 
-        // Comparar password
-        const isMatch = await bcrypt.compare(password, usuario.password);
+        const usuario = result.user;
 
-        if (!isMatch) {
-            return next({
-                status: 401,
-                message: "Credenciales inválidas"
-            });
-        }
-
-        // Generar token
         const token = jwt.sign(
             { id: usuario._id, email: usuario.email },
             process.env.SECRET_JWT,

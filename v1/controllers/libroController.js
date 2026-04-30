@@ -12,6 +12,10 @@ import {
 
 // Crear libro
 export const createLibro = async (req, res, next) => {
+   
+console.log("BODY:", req.body);
+console.log("CONTENT-TYPE:", req.headers["content-type"]);
+
     try {
         const { titulo, autorId, categoriaLista, descripcion, portada } =
             req.validatedBody || req.body;

@@ -7,7 +7,17 @@ export const createCategoriaService = async (nombre) => {
         error.status = 400;
         throw error;
     }
-    const categoria = new Categoria({ nombre: nombre.trim() });
+    
+    const nombreTrimmed = nombre.trim();
+    const categoriaExistente = await Categoria.findOne({ nombre: nombreTrimmed, activo: true });
+    if (categoriaExistente) {
+        const error = new Error("La categoría ya existe");
+        error.details = "Ya existe una categoría con este nombre";
+        error.status = 409;
+        throw error;
+    }
+    
+    const categoria = new Categoria({ nombre: nombreTrimmed });
     await categoria.save();
     return categoria;
 };

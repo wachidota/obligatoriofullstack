@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const createLibroSchema = Joi.object({
-    titulo: Joi.string().empty(/\s+/).required().messages({
+    titulo: Joi.string().trim().required().messages({
         "string.base": "El título del libro debe ser texto",
         "string.empty": "El título del libro no puede estar vacío",
         "any.required": "El título del libro es obligatorio"
@@ -23,7 +23,7 @@ export const createLibroSchema = Joi.object({
         "array.min": "Debes seleccionar al menos una categoría",
         "any.required": "La lista de categorías es obligatoria"
     }),
-    descripcion: Joi.string().empty(/\s+/).required().messages({
+    descripcion: Joi.string().trim().required().messages({
         "string.base": "La descripción debe ser texto",
         "string.empty": "La descripción no puede estar vacía",
         "any.required": "La descripción es obligatoria"
@@ -37,7 +37,7 @@ export const createLibroSchema = Joi.object({
 });
 
 export const updateLibroSchema = Joi.object({
-    titulo: Joi.string().empty(/\s+/).optional().messages({
+    titulo: Joi.string().trim().optional().messages({
         "string.base": "El título del libro debe ser texto",
         "string.empty": "El título del libro no puede estar vacío"
     }),

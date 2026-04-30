@@ -14,7 +14,7 @@ export const createReviewSchema = Joi.object({
         "number.max": "La calificación máxima es 5",
         "any.required": "La calificación es obligatoria"
     }),
-    comentario: Joi.string().empty(/\s+/).required().messages({
+    comentario: Joi.string().trim().required().messages({
         "string.base": "El comentario debe ser texto",
         "string.empty": "El comentario no puede estar vacío",
         "any.required": "El comentario es obligatorio"
@@ -38,7 +38,7 @@ export const updateReviewSchema = Joi.object({
         "number.min": "La calificación mínima es 1",
         "number.max": "La calificación máxima es 5"
     }),
-    comentario: Joi.string().empty(/\s+/).optional().messages({
+    comentario: Joi.string().trim().optional().messages({
         "string.base": "El comentario debe ser texto",
         "string.empty": "El comentario no puede estar vacío"
     })

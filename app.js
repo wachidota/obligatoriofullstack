@@ -9,7 +9,6 @@ import { errorMiddleware } from "./v1/middlewares/error.middleware.js";
 
 
 dotenv.config();
-console.log(process.env.MONGODB_URI);
 connectDB();
 
 const app = express();

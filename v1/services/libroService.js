@@ -86,7 +86,7 @@ async (
 };
 
 export const getAllLibrosService = async () => {
-    const libros = await Libro.find({ activo: true }).populate('autor', 'nombre').populate('CategoriaLista', 'nombre');
+    const libros = await Libro.find({ activo: true }).populate('autor', 'nombre -_id').populate('CategoriaLista', 'nombre -_id')
     return libros;
 };
 
@@ -96,7 +96,7 @@ export const getLibroByIdService = async (id) => {
         error.status = 400;
         throw error;
     }
-    const libro = await Libro.findOne({ _id: id, activo: true }).populate('autor', 'nombre').populate('CategoriaLista', 'nombre');
+    const libro = await Libro.findOne({ _id: id, activo: true }).populate('autor', 'nombre -_id').populate('CategoriaLista', 'nombre -_id');
     if (!libro) {
         const error = new Error("Libro no encontrado o inactivo");
         error.status = 404;
@@ -115,7 +115,7 @@ export const updateLibroService = async (id, updates) => {
         { _id: id, activo: true },
         updates,
         { new: true }
-    ).populate('autor', 'nombre').populate('CategoriaLista', 'nombre');
+    ).populate('autor', 'nombre -_id').populate('CategoriaLista', 'nombre -_id');
     if (!libro) {
         const error = new Error("Libro no encontrado o inactivo");
         error.status = 404;
@@ -156,9 +156,10 @@ export const getLibrosByCategoriaService = async (categoriaId) => {
         error.status = 404;
         throw error;
     }
-    const libros = await Libro.find({ CategoriaLista: categoriaId, activo: true }).populate('autor', 'nombre').populate('CategoriaLista', 'nombre');
+    const libros = await Libro.find({ CategoriaLista: categoriaId, activo: true }).populate('autor', 'nombre -_id').populate('CategoriaLista', 'nombre -_id');
     return libros;
 }
+
 export const getPromedioCalificacionesService = async (idLibro) => {
     if (!isValidObjectId(idLibro)) {
         const error = new Error("ID de libro no válido");
@@ -174,7 +175,7 @@ export const getPromedioCalificacionesService = async (idLibro) => {
     }
 
     const result = await Review.aggregate([
-        { $match: { libro: mongoose.Types.ObjectId(idLibro) } },
+        { $match: { libro: new mongoose.Types.ObjectId(idLibro) } },
         {
             $group: {
                 _id: null,
@@ -197,7 +198,7 @@ export const getReviewsByLibroService = async (idLibro) => {
         error.status = 404;
         throw error;
     }
-    const reviews = await Review.find({ libro: idLibro }).populate('usuario', 'nombre');
+    const reviews = await Review.find({ libro: idLibro }).populate('usuario', 'nombre -_id');
     return reviews;
 };
 
@@ -207,11 +208,11 @@ export const getCapitulosByLibroService = async (id) => {
         error.status = 400;
         throw error;
     }
-    const libro = await Libro.findOne({ _id: id, activo: true }).populate('capitulos');
+    const libro = await Libro.findOne({ _id: id, activo: true }).populate('listaCapitulos');
     if (!libro) {
         const error = new Error("Libro no encontrado o inactivo");
         error.status = 404;
         throw error;
     }
-    return libro.capitulos;
+    return libro.listaCapitulos || [];
 };

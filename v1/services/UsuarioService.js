@@ -201,7 +201,8 @@ export const getLibrosLeidosService = async (idUsuario) => {
         throw error;
     }
 
-    const usuario = await Usuario.findOne({ _id: idUsuario, activo: true });
+    const usuario = await Usuario.findOne({ _id: idUsuario, activo: true })
+    .populate('listaLibrosLeidos', 'titulo autor -_id');
     if (!usuario) {
         const error = new Error("Usuario no encontrado o inactivo");
         error.details = "No existe un usuario activo con el ID proporcionado";
@@ -209,7 +210,7 @@ export const getLibrosLeidosService = async (idUsuario) => {
         throw error;
     }
 
-    return usuario.listaLibrosLeidos.populate('librosLeidos', 'titulo autor');
+    return usuario.listaLibrosLeidos ;
 };
 
 export const getLibrosEcritosService = async (idUsuario) => {
@@ -220,7 +221,7 @@ export const getLibrosEcritosService = async (idUsuario) => {
         throw error;
     }
 
-    const usuario = await Usuario.findOne({ _id: idUsuario, activo: true });
+    const usuario = await Usuario.findOne({ _id: idUsuario, activo: true }).populate('listaLibrosEscritos', 'titulo CategoriaLista -_id');
     if (!usuario) {
         const error = new Error("Usuario no encontrado o inactivo");
         error.details = "No existe un usuario activo con el ID proporcionado";
@@ -228,6 +229,6 @@ export const getLibrosEcritosService = async (idUsuario) => {
         throw error;
     }
 
-    return usuario.listaLibrosEcritos.populate('librosEcritos', 'titulo');
+    return usuario.listaLibrosEcritos ;
 };
 

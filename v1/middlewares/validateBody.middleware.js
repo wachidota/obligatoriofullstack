@@ -4,6 +4,6 @@ export const validateBodyMiddleware = schema => (req, res, next) => {
         return res.status(400).json({ error: error.details });
     }
     req.validatedBody = value;
-    //req.body = value;
+    req.body = value;
     next();
 };

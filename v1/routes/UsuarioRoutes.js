@@ -15,8 +15,8 @@ router.get('/:id', getUsuarioById);
 router.put('/:id/premium', setUsuarioPremium);
 router.delete('/:id/deactivate', deactivateUsuario);
 router.put('/:id/password', validateBodyMiddleware(actualizarPasswordSchema), updateUsuarioPassword);
-router.post('/:id/libros-leidos', validateBodyMiddleware(agregarLibroLeidoSchema), addLibroLeido);
-router.delete('/:id/libros-leidos/:libroId', removeLibroLeido);
+router.post('/:id/libros-leidos/:idLibro', addLibroLeido);
+router.delete('/:id/libros-leidos/:idLibro', removeLibroLeido);
 router.get('/:id/libros-escritos', getLibrosEcritos);
 router.get('/:id/libros-leidos', getLibrosLeidos);
 

@@ -2,7 +2,7 @@ import Joi from "joi";
 
 
 export const createComentarioSchema = Joi.object({
-    contenido: Joi.string().empty(/\s+/).required().messages({
+    contenido: Joi.string().trim().required().messages({
         "string.empty": "El contenido no puede estar vacío",
         "any.required": "El contenido es obligatorio"
     }),
@@ -14,7 +14,7 @@ export const createComentarioSchema = Joi.object({
 });
 
 export const updateComentarioSchema = Joi.object({
-    contenido: Joi.string().empty(/\s+/).optional().messages({
+    contenido: Joi.string().trim().optional().messages({
         "string.base": "El contenido del comentario debe ser texto",
         "string.empty": "El contenido del comentario no puede estar vacío"
     }),

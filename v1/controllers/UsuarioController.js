@@ -66,10 +66,9 @@ export const updateUsuarioPassword = async (req, res, next) => {
 // Agregar libro leído
 export const addLibroLeido = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { libroId } = req.validatedBody || req.body;
+        const { id, idLibro } = req.params; // ✅ ahora ambos vienen de la URL
 
-        const usuario = await addLibroLeidoService(id, libroId);
+        const usuario = await addLibroLeidoService(id, idLibro);
 
         res.json({ mensaje: "Libro agregado a la lista de leídos", usuario });
     } catch (err) {
@@ -77,13 +76,13 @@ export const addLibroLeido = async (req, res, next) => {
     }
 };
 
-// Eliminar libro leído
+
+
 export const removeLibroLeido = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { libroId } = req.validatedBody || req.body;
+        const { id, idLibro } = req.params; // ✅ ambos vienen de la URL
 
-        const usuario = await removeLibroLeidoService(id, libroId);
+        const usuario = await removeLibroLeidoService(id, idLibro);
 
         res.json({ mensaje: "Libro eliminado de la lista de leídos", usuario });
     } catch (err) {

@@ -1,6 +1,7 @@
 import Capitulo from "../models/capituloModel.js";
 import Libro from "../models/LibroModel.js";
 import Usuario from "../models/UsuarioModel.js";
+import Comentario from "../models/comentarioModel.js";
 import { isValidObjectId } from "mongoose";
 import 'dotenv/config';
 
@@ -139,6 +140,6 @@ export const getComentariosByCapituloService = async (capituloId) => {
         error.status = 404;
         throw error;
     }
-    const comentarios = await Comentario.find({ capitulo: capituloId }).populate('autor', 'nombre');
+    const comentarios = await Comentario.find({ capitulo: capituloId }).populate('autor', 'nombre -_id');
     return comentarios;
 };

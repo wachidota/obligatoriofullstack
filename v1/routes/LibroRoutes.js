@@ -20,11 +20,19 @@ import {
 const router = express.Router();
 
 // Crear libro (validación)
+
+
 router.post(
-    "/",
-    validateBodyMiddleware(createLibroSchema),
-    createLibro
+  "/",
+  (req, res, next) => {
+    console.log("BODY ANTES DE VALIDAR:", req.body);
+    next();
+  },
+  validateBodyMiddleware(createLibroSchema),
+  createLibro
 );
+
+
 
 // Obtener todos
 router.get("/", getAllLibros);

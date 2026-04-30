@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 const CategoriaSchema = new mongoose.Schema({
   nombre: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
+    trim: true
   },
   activo: {
     type: Boolean,

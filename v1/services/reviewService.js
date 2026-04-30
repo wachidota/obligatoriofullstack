@@ -59,7 +59,7 @@ export const getReviewByIdService = async (id) => {
         error.status = 400;
         throw error;
     }
-    const review = await Review.findById(id).populate('libro', 'titulo').populate('usuario', 'nombre');
+    const review = await Review.findById(id).populate('libro', 'titulo').populate('usuario', 'nombre -_id');
     if (!review) {
         const error = new Error("Review no encontrada");
         error.status = 404;

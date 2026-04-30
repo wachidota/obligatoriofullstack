@@ -3,13 +3,13 @@ import bcryptjs from "bcryptjs";
 import Usuario from "../models/UsuarioModel.js";
 
 export const registrarUsuarioService = async (user) => {
+    console.log("Password recibido en registro:", user.password);
     const password = user.password;
     const hashedPassword = bcryptjs.hashSync(password, Number(process.env.SALT_ROUNDS));
     user.password = hashedPassword;
     const nuevoUsuario = new Usuario(user);
     await nuevoUsuario.save();
     return { success: true, message: "Usuario registrado exitosamente", usuario:nuevoUsuario };
-
 };
 
 export const loginUsuarioService = async (user) => {
@@ -20,7 +20,10 @@ export const loginUsuarioService = async (user) => {
   }
 
   // Validar contraseña
-  const valid = bcryptjs.compareSync(user.password, usuarioEncontrado.password);
+  console.log("Password recibido:", user.password);
+console.log("Hash en DB:", usuarioEncontrado.password);
+const valid = bcryptjs.compareSync(user.password, usuarioEncontrado.password);
+console.log("Resultado compare:", valid);
   if (!valid) {
     return { success: false, message: "Contraseña incorrecta" };
   }
@@ -29,6 +32,7 @@ export const loginUsuarioService = async (user) => {
   usuarioEncontrado.ultimoLogin = new Date();
   await usuarioEncontrado.save();
 
+  
   // Retornar usuario sin contraseña
   const usuarioSinPW = await Usuario.findById(usuarioEncontrado._id).select("-password");
 
