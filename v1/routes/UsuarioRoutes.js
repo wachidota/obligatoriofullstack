@@ -6,7 +6,7 @@ import { getUsuarioById,
     addLibroLeido,
     removeLibroLeido,
     getLibrosEcritos,
-    getLibrosLeidos} from "../controllers/usuarioController.js";
+    getLibrosLeidos} from "../controllers/UsuarioController.js";
 import  {validateBodyMiddleware}  from "../middlewares/validateBody.middleware.js";
 import { actualizarPasswordSchema, agregarLibroLeidoSchema } from "../validators/usuario.validator.js";
 const router = express.Router();
