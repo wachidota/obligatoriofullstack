@@ -3,13 +3,32 @@ import bcryptjs from "bcryptjs";
 import Usuario from "../models/UsuarioModel.js";
 
 export const registrarUsuarioService = async (user) => {
-    console.log("Password recibido en registro:", user.password);
-    const password = user.password;
-    const hashedPassword = bcryptjs.hashSync(password, Number(process.env.SALT_ROUNDS));
-    user.password = hashedPassword;
-    const nuevoUsuario = new Usuario(user);
+    const { email, password, nombre } = user;
+
+    // 🔎 Verificar si ya existe
+    const existente = await Usuario.findOne({ email });
+
+    if (existente) {
+        const err = new Error("El email ya está registrado");
+        err.status = 409;
+        throw err;
+    }
+
+    // 🔐 Hash
+    const hashedPassword = bcryptjs.hashSync(
+        password,
+        Number(process.env.SALT_ROUNDS)
+    );
+
+    const nuevoUsuario = new Usuario({
+        email,
+        password: hashedPassword,
+        nombre
+    });
+
     await nuevoUsuario.save();
-    return { success: true, message: "Usuario registrado exitosamente", usuario:nuevoUsuario };
+
+    return nuevoUsuario;
 };
 
 export const loginUsuarioService = async (user) => {

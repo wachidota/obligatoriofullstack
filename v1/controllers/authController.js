@@ -9,14 +9,12 @@ export const registrarUsuario = async (req, res, next) => {
     try {
         const { email, password, nombre } = req.validatedBody || req.body;
 
-        // Pasar la contraseña en texto plano al service
         const usuario = await registrarUsuarioService({
             email,
             password,
             nombre
         });
 
-        // Generar token
         const token = jwt.sign(
             { id: usuario._id, email: usuario.email },
             process.env.SECRET_JWT,
