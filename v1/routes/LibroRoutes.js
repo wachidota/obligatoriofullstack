@@ -57,5 +57,5 @@ router.delete("/:id", deleteLibro);
 router.get("/:id/promedio-calificaciones", getPromedioCalificaciones);
 router.get("/:id/capitulos", getCapitulosByLibro);
 router.get("/:id/reviews", getReviewsByLibro);
-router.get("/gemini-flash", useGemini25Flash);
+router.post("/gemini-flash", useGemini25Flash);
 export default router;
