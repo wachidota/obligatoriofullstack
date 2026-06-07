@@ -213,7 +213,7 @@ export const getLibrosLeidosService = async (idUsuario) => {
     return usuario.listaLibrosLeidos ;
 };
 
-export const getLibrosEcritosService = async (idUsuario) => {
+export const getLibrosEscritosService = async (idUsuario) => {
     if (!isValidObjectId(idUsuario)) {
         const error = new Error("ID de usuario no válido");
         error.details = "ID debe ser un ObjectId válido";
