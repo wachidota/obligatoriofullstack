@@ -4,7 +4,7 @@ import { getUsuarioByIdService,
     updateUsuarioPasswordService,
     addLibroLeidoService,
     removeLibroLeidoService,
-    getLibrosEcritosService,
+    getLibrosEscritosService,
     getLibrosLeidosService
 } from "../services/UsuarioService.js";
 
