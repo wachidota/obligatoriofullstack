@@ -229,6 +229,6 @@ export const getLibrosEcritosService = async (idUsuario) => {
         throw error;
     }
 
-    return usuario.listaLibrosEcritos ;
+    return usuario.listaLibrosEscritos || [];
 };
 

@@ -91,10 +91,10 @@ export const removeLibroLeido = async (req, res, next) => {
 };
 
 // Libros escritos
-export const getLibrosEcritos = async (req, res, next) => {
+export const getLibrosEscritos = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const libros = await getLibrosEcritosService(id);
+        const libros = await getLibrosEscritosService(id);
 
         res.json({ mensaje: "Libros escritos por el usuario", libros });
     } catch (err) {

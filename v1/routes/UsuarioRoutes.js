@@ -5,7 +5,7 @@ import { getUsuarioById,
     updateUsuarioPassword,
     addLibroLeido,
     removeLibroLeido,
-    getLibrosEcritos,
+    getLibrosEscritos,
     getLibrosLeidos} from "../controllers/UsuarioController.js";
 import  {validateBodyMiddleware}  from "../middlewares/validateBody.middleware.js";
 import { actualizarPasswordSchema, agregarLibroLeidoSchema } from "../validators/usuario.validator.js";
@@ -17,7 +17,7 @@ router.delete('/:id/deactivate', deactivateUsuario);
 router.put('/:id/password', validateBodyMiddleware(actualizarPasswordSchema), updateUsuarioPassword);
 router.post('/:id/libros-leidos/:idLibro', addLibroLeido);
 router.delete('/:id/libros-leidos/:idLibro', removeLibroLeido);
-router.get('/:id/libros-escritos', getLibrosEcritos);
+router.get('/:id/libros-escritos', getLibrosEscritos);
 router.get('/:id/libros-leidos', getLibrosLeidos);
 
 export default router;
