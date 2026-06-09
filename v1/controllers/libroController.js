@@ -12,30 +12,46 @@ import {
 
 // Crear libro
 export const createLibro = async (req, res, next) => {
-   
-console.log("BODY:", req.body);
-console.log("CONTENT-TYPE:", req.headers["content-type"]);
 
     try {
-        const { titulo, autorId, categoriaLista, descripcion, portada } =
-            req.validatedBody || req.body;
 
-        const libro = await createLibroService(
+        const {
+
             titulo,
-            autorId,
-            categoriaLista,
+            CategoriaLista,
             descripcion,
             portada
+
+        } = req.validatedBody || req.body;
+
+        const autorId = req.user.id;
+
+        const libro = await createLibroService(
+
+            titulo,
+            autorId,
+            CategoriaLista,
+            descripcion,
+            portada
+
         );
 
         res.status(201).json({
+
             mensaje: "Libro creado",
+
             libro
+
         });
 
-    } catch (err) {
-        next(err);
     }
+
+    catch (err) {
+
+        next(err);
+
+    }
+
 };
 
 // Obtener todos

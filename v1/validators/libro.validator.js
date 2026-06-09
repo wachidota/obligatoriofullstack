@@ -6,11 +6,9 @@ export const createLibroSchema = Joi.object({
         "string.empty": "El título del libro no puede estar vacío",
         "any.required": "El título del libro es obligatorio"
     }),
-    autorId: Joi.string().length(24).hex().required().messages({
+    autorId: Joi.string().length(24).hex().messages({
         "string.base": "El ID del autor debe ser texto",
         "string.length": "El ID del autor debe tener 24 caracteres",
-        "string.hex": "El ID del autor debe ser un ObjectId válido",
-        "any.required": "El ID del autor es obligatorio"
     }),
     categoriaLista: Joi.array().items(
         Joi.string().length(24).hex().messages({
