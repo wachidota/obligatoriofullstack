@@ -90,7 +90,7 @@ export const getAllLibrosService = async (page = 1, limit = 10) => {
 
     const libros = await Libro.find({ activo: true })
         .populate('autor', 'nombre -_id')
-        .populate('categoriaLista', 'nombre -_id')
+        .populate('categoriaLista', '_id nombre')
         .skip(skip)
         .limit(limit);
 
@@ -179,7 +179,7 @@ export const updateLibroService = async (id, updates, usuarioId) => {
         { _id: id, activo: true },
         updateData,
         { new: true }
-    ).populate('autor', 'nombre -_id').populate('categoriaLista', 'nombre -_id');
+    ).populate('autor', 'nombre -_id').populate('categoriaLista', '_id nombre');
 
     return libro;
 };
@@ -225,7 +225,7 @@ export const getLibrosByCategoriaService = async (categoriaId) => {
         error.status = 404;
         throw error;
     }
-    const libros = await Libro.find({ categoriaLista: categoriaId, activo: true }).populate('autor', 'nombre -_id').populate('categoriaLista', 'nombre -_id');
+    const libros = await Libro.find({ categoriaLista: categoriaId, activo: true }).populate('autor', 'nombre -_id').populate('categoriaLista', '_id nombre');
     return libros;
 }
 
