@@ -5,7 +5,7 @@ import Comentario from "../models/comentarioModel.js";
 import { isValidObjectId } from "mongoose";
 import 'dotenv/config';
 
-export const createCapituloService = async (titulo, contenido, numero, libroId) => {
+export const createCapituloService = async (titulo, contenido, numero, libroId, usuarioId) => {
     // validator
     if (!isValidObjectId(libroId)) {
         const error = new Error("ID de libro no válido");
@@ -17,6 +17,12 @@ export const createCapituloService = async (titulo, contenido, numero, libroId) 
     if (!libro) {
         const error = new Error("Libro no encontrado o inactivo");
         error.status = 404;
+        throw error;
+    }
+
+    if (libro.autor.toString() !== usuarioId) {
+        const error = new Error("No tienes permiso para realizar esta acción");
+        error.status = 403;
         throw error;
     }
 
@@ -64,7 +70,7 @@ export const getCapituloByIdService = async (id) => {
         error.status = 400;
         throw error;
     }
-    const capitulo = await Capitulo.findById(id).populate('libro', 'titulo');
+    const capitulo = await Capitulo.findById(id).populate('libro', 'titulo autor');
     if (!capitulo) {
         const error = new Error("Capítulo no encontrado");
         error.status = 404;
@@ -73,33 +79,65 @@ export const getCapituloByIdService = async (id) => {
     return capitulo;
 };
 
-export const updateCapituloService = async (id, updates) => {
+export const updateCapituloService = async (id, updates, usuarioId) => {
     if (!isValidObjectId(id)) {
         const error = new Error("ID de capítulo no válido");
         error.status = 400;
         throw error;
     }
+
+    const capituloActual = await Capitulo.findById(id);
+    if (!capituloActual) {
+        const error = new Error("Capítulo no encontrado");
+        error.status = 404;
+        throw error;
+    }
+
+    const libro = await Libro.findOne({ _id: capituloActual.libro, activo: true });
+    if (!libro) {
+        const error = new Error("Libro no encontrado o inactivo");
+        error.status = 404;
+        throw error;
+    }
+
+    if (libro.autor.toString() !== usuarioId) {
+        const error = new Error("No tienes permiso para realizar esta acción");
+        error.status = 403;
+        throw error;
+    }
+
     const capitulo = await Capitulo.findByIdAndUpdate(id, updates, { new: true }).populate('libro', 'titulo');
-    if (!capitulo) {
-        const error = new Error("Capítulo no encontrado");
-        error.status = 404;
-        throw error;
-    }
     return capitulo;
 };
 
-export const deleteCapituloService = async (id) => {
+export const deleteCapituloService = async (id, usuarioId) => {
     if (!isValidObjectId(id)) {
         const error = new Error("ID de capítulo no válido");
         error.status = 400;
         throw error;
     }
-    const capitulo = await Capitulo.findByIdAndDelete(id);
+
+    const capitulo = await Capitulo.findById(id);
     if (!capitulo) {
         const error = new Error("Capítulo no encontrado");
         error.status = 404;
         throw error;
     }
+
+    const libro = await Libro.findOne({ _id: capitulo.libro, activo: true });
+    if (!libro) {
+        const error = new Error("Libro no encontrado o inactivo");
+        error.status = 404;
+        throw error;
+    }
+
+    if (libro.autor.toString() !== usuarioId) {
+        const error = new Error("No tienes permiso para realizar esta acción");
+        error.status = 403;
+        throw error;
+    }
+
+    await Capitulo.findByIdAndDelete(id);
 
     // Remover de listaCapitulos del libro
     await Libro.findByIdAndUpdate(capitulo.libro, { $pull: { listaCapitulos: id } });

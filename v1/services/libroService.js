@@ -126,41 +126,60 @@ export const getLibroByIdService = async (id) => {
     return libro;
 };
 
-export const updateLibroService = async (id, updates) => {
+export const updateLibroService = async (id, updates, usuarioId) => {
     if (!isValidObjectId(id)) {
         const error = new Error("ID de libro no válido");
         error.status = 400;
         throw error;
     }
-    const libro = await Libro.findOneAndUpdate(
-        { _id: id, activo: true },
-        updates,
-        { new: true }
-    ).populate('autor', 'nombre -_id').populate('CategoriaLista', 'nombre -_id');
-    if (!libro) {
+
+    const libroActual = await Libro.findOne({ _id: id, activo: true });
+    if (!libroActual) {
         const error = new Error("Libro no encontrado o inactivo");
         error.status = 404;
         throw error;
     }
+
+    if (libroActual.autor.toString() !== usuarioId) {
+        const error = new Error("No tienes permiso para realizar esta acción");
+        error.status = 403;
+        throw error;
+    }
+
+    const libro = await Libro.findOneAndUpdate(
+        { _id: id, activo: true },
+        updates,
+        { new: true }
+    ).populate('autor', 'nombre -_id').populate('categoriaLista', 'nombre -_id');
+
     return libro;
 };
 
-export const deleteLibroService = async (id) => {
+export const deleteLibroService = async (id, usuarioId) => {
     if (!isValidObjectId(id)) {
         const error = new Error("ID de libro no válido");
         error.status = 400;
         throw error;
     }
+
+    const libroActual = await Libro.findOne({ _id: id, activo: true });
+    if (!libroActual) {
+        const error = new Error("Libro no encontrado o inactivo");
+        error.status = 404;
+        throw error;
+    }
+
+    if (libroActual.autor.toString() !== usuarioId) {
+        const error = new Error("No tienes permiso para realizar esta acción");
+        error.status = 403;
+        throw error;
+    }
+
     const libro = await Libro.findOneAndUpdate(
         { _id: id, activo: true },
         { activo: false },
         { new: true }
     );
-    if (!libro) {
-        const error = new Error("Libro no encontrado o inactivo");
-        error.status = 404;
-        throw error;
-    }
 
     await Usuario.findByIdAndUpdate(libro.autor, { $pull: { listaLibrosEscritos: id } });
     return libro;

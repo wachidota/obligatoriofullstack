@@ -17,7 +17,8 @@ export const createCapitulo = async (req, res, next) => {
             titulo,
             contenido,
             numero,
-            libroId
+            libroId,
+            req.user.id
         );
 
         res.status(201).json({
@@ -44,9 +45,15 @@ export const getCapituloById = async (req, res, next) => {
             });
         }
 
+        const capituloResponse = capitulo.toObject();
+        capituloResponse.isAuthor = capitulo.libro?.autor?.toString() === req.user.id;
+        if (capituloResponse.libro) {
+            delete capituloResponse.libro.autor;
+        }
+
         res.json({
             mensaje: "Capítulo encontrado",
-            capitulo
+            capitulo: capituloResponse
         });
 
     } catch (err) {
@@ -60,7 +67,7 @@ export const updateCapitulo = async (req, res, next) => {
         const { id } = req.params;
         const updates = req.validatedBody || req.body;
 
-        const capitulo = await updateCapituloService(id, updates);
+        const capitulo = await updateCapituloService(id, updates, req.user.id);
 
         if (!capitulo) {
             return next({
@@ -84,7 +91,7 @@ export const deleteCapitulo = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const capitulo = await deleteCapituloService(id);
+        const capitulo = await deleteCapituloService(id, req.user.id);
 
         if (!capitulo) {
             return next({

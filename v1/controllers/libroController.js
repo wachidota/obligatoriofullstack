@@ -90,9 +90,15 @@ export const getLibroById = async (req, res, next) => {
             return next({ status: 404, message: "Libro no encontrado" });
         }
 
+        const libroResponse = libro.toObject();
+        libroResponse.isAuthor = libro.autor?._id?.toString() === req.user.id;
+        if (libroResponse.autor) {
+            delete libroResponse.autor._id;
+        }
+
         res.json({
             mensaje: "Libro encontrado",
-            libro
+            libro: libroResponse
         });
 
     } catch (err) {
@@ -106,7 +112,7 @@ export const updateLibro = async (req, res, next) => {
         const { id } = req.params;
         const updates = req.validatedBody || req.body;
 
-        const libro = await updateLibroService(id, updates);
+        const libro = await updateLibroService(id, updates, req.user.id);
 
         if (!libro) {
             return next({ status: 404, message: "Libro no encontrado" });
@@ -127,7 +133,7 @@ export const deleteLibro = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const libro = await deleteLibroService(id);
+        const libro = await deleteLibroService(id, req.user.id);
 
         if (!libro) {
             return next({ status: 404, message: "Libro no encontrado" });
