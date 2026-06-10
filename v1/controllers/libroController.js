@@ -55,7 +55,7 @@ export const createLibro = async (req, res, next) => {
 };
 
 // Obtener todos
-const getAllLibros = async (req, res, next) => {
+export const getAllLibros = async (req, res, next) => {
     try {
         let page = parseInt(req.query.page) || 1;
         let limit = parseInt(req.query.limit) || 10;
