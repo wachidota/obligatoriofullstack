@@ -71,7 +71,7 @@ async (
     const libro = new Libro({
         titulo,
         autor: autorId,
-        CategoriaLista: categoriaLista,
+        categoriaLista: categoriaLista,
         descripcion,
         portada
     });
@@ -85,10 +85,28 @@ async (
     return libro;
 };
 
-export const getAllLibrosService = async () => {
-    const libros = await Libro.find({ activo: true }).populate('autor', 'nombre -_id').populate('CategoriaLista', 'nombre -_id')
-    return libros;
+export const getAllLibrosService = async (page = 1, limit = 10) => {
+    const skip = (page - 1) * limit;
+
+    const libros = await Libro.find({ activo: true })
+        .populate('autor', 'nombre -_id')
+        .populate('categoriaLista', 'nombre -_id')
+        .skip(skip)
+        .limit(limit);
+
+    const total = await Libro.countDocuments({ activo: true });
+
+    return {
+        libros,
+        pagination: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit)
+        }
+    };
 };
+
 
 export const getLibroByIdService = async (id) => {
     if (!isValidObjectId(id)) {
@@ -96,7 +114,10 @@ export const getLibroByIdService = async (id) => {
         error.status = 400;
         throw error;
     }
-    const libro = await Libro.findOne({ _id: id, activo: true }).populate('autor', 'nombre -_id').populate('CategoriaLista', 'nombre -_id');
+    const libro = await Libro.findById(id)
+    .populate("autor", "_id nombre")
+    .populate("categoriaLista", "_id nombre")
+    .populate("listaCapitulos");
     if (!libro) {
         const error = new Error("Libro no encontrado o inactivo");
         error.status = 404;

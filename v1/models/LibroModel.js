@@ -5,7 +5,7 @@ import  Usuario  from "./UsuarioModel.js";
 const LibroSchema = new mongoose.Schema({
     titulo: { type: String, required: true },
     autor: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true },
-    CategoriaLista: [{ type: mongoose.Schema.Types.ObjectId, ref: "Categoria", required: true }],
+    categoriaLista: [{ type: mongoose.Schema.Types.ObjectId, ref: "Categoria", required: true }],
     descripcion: { type: String, required: true },
     portada: { type: String, required: true },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "review" }],

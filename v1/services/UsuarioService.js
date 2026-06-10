@@ -202,7 +202,11 @@ export const getLibrosLeidosService = async (idUsuario) => {
     }
 
     const usuario = await Usuario.findOne({ _id: idUsuario, activo: true })
-    .populate('listaLibrosLeidos', 'titulo autor portada ');
+    .populate({
+        path: 'listaLibrosLeidos',
+        select: 'titulo autor portada',
+        populate: { path: 'autor', select: 'nombre' }
+    });
     if (!usuario) {
         const error = new Error("Usuario no encontrado o inactivo");
         error.details = "No existe un usuario activo con el ID proporcionado";
@@ -221,7 +225,11 @@ export const getLibrosEscritosService = async (idUsuario) => {
         throw error;
     }
 
-    const usuario = await Usuario.findOne({ _id: idUsuario, activo: true }).populate('listaLibrosEscritos', 'titulo CategoriaLista portada');
+    const usuario = await Usuario.findOne({ _id: idUsuario, activo: true }).populate({
+        path: 'listaLibrosEscritos',
+        select: 'titulo categoriaLista portada',
+        populate: { path: 'autor', select: 'nombre' }
+    });
     if (!usuario) {
         const error = new Error("Usuario no encontrado o inactivo");
         error.details = "No existe un usuario activo con el ID proporcionado";

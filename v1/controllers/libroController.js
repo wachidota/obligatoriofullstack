@@ -55,19 +55,29 @@ export const createLibro = async (req, res, next) => {
 };
 
 // Obtener todos
-export const getAllLibros = async (req, res, next) => {
+const getAllLibros = async (req, res, next) => {
     try {
-        const libros = await getAllLibrosService();
+        let page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 10;
+
+        // Validaciones
+        if (page < 1) page = 1;              // Nunca menor que 1
+        if (limit < 1) limit = 10;           // Nunca menor que 1
+        if (limit > 100) limit = 100;        // Máximo 100 por página
+
+        const { libros, pagination } = await getAllLibrosService(page, limit);
 
         res.json({
             mensaje: "Libros obtenidos",
-            libros
+            libros,
+            pagination
         });
 
     } catch (err) {
         next(err);
     }
 };
+
 
 // Obtener por ID
 export const getLibroById = async (req, res, next) => {
