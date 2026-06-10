@@ -18,7 +18,7 @@ export const createLibro = async (req, res, next) => {
         const {
 
             titulo,
-            CategoriaLista,
+            categoriaLista,
             descripcion,
             portada
 
@@ -30,7 +30,7 @@ export const createLibro = async (req, res, next) => {
 
             titulo,
             autorId,
-            CategoriaLista,
+            categoriaLista,
             descripcion,
             portada
 
