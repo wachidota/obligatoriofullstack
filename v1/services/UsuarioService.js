@@ -230,7 +230,7 @@ export const getLibrosEscritosService = async (idUsuario) => {
 
     const usuario = await Usuario.findOne({ _id: idUsuario, activo: true }).populate({
         path: 'listaLibrosEscritos',
-        select: 'titulo autor categoriaLista portada',
+        select: 'titulo autor categoriaLista portada listaCapitulos',
         populate: [
             { path: 'autor', select: 'nombre' },
             { path: 'categoriaLista', select: 'nombre -_id' }
@@ -243,6 +243,15 @@ export const getLibrosEscritosService = async (idUsuario) => {
         throw error;
     }
 
-    return usuario.listaLibrosEscritos || [];
+    return (usuario.listaLibrosEscritos || []).map((libro) => {
+        const libroResponse = libro.toObject();
+        const cantidadCapitulos = libroResponse.listaCapitulos?.length || 0;
+
+        return {
+            ...libroResponse,
+            cantidadCapitulos,
+            listaCapitulos: Array.from({ length: cantidadCapitulos }, () => ({}))
+        };
+    });
 };
 
