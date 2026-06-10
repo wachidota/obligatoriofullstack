@@ -114,7 +114,7 @@ export const getLibroByIdService = async (id) => {
         error.status = 400;
         throw error;
     }
-    const libro = await Libro.findById(id)
+    const libro = await Libro.findOne({ _id: id, activo: true })
     .populate("autor", "_id nombre")
     .populate("categoriaLista", "_id nombre")
     .populate("listaCapitulos");
@@ -146,9 +146,38 @@ export const updateLibroService = async (id, updates, usuarioId) => {
         throw error;
     }
 
+    const updateData = {};
+
+    if (updates.titulo !== undefined) {
+        updateData.titulo = updates.titulo;
+    }
+
+    if (updates.descripcion !== undefined) {
+        updateData.descripcion = updates.descripcion;
+    }
+
+    if (updates.portada !== undefined) {
+        updateData.portada = updates.portada;
+    }
+
+    if (updates.categoriaLista !== undefined) {
+        const categorias = await Categoria.find({
+            _id: { $in: updates.categoriaLista },
+            activo: true
+        });
+
+        if (categorias.length !== updates.categoriaLista.length) {
+            const error = new Error("Una o mas categorias no existen");
+            error.status = 400;
+            throw error;
+        }
+
+        updateData.categoriaLista = updates.categoriaLista;
+    }
+
     const libro = await Libro.findOneAndUpdate(
         { _id: id, activo: true },
-        updates,
+        updateData,
         { new: true }
     ).populate('autor', 'nombre -_id').populate('categoriaLista', 'nombre -_id');
 
@@ -196,7 +225,7 @@ export const getLibrosByCategoriaService = async (categoriaId) => {
         error.status = 404;
         throw error;
     }
-    const libros = await Libro.find({ CategoriaLista: categoriaId, activo: true }).populate('autor', 'nombre -_id').populate('CategoriaLista', 'nombre -_id');
+    const libros = await Libro.find({ categoriaLista: categoriaId, activo: true }).populate('autor', 'nombre -_id').populate('categoriaLista', 'nombre -_id');
     return libros;
 }
 
