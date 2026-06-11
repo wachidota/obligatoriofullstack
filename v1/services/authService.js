@@ -32,27 +32,21 @@ export const registrarUsuarioService = async (user) => {
 };
 
 export const loginUsuarioService = async (user) => {
-  // Buscar usuario por email y que esté activo
+  const invalidCredentialsMessage = "usuario o contrase�a incorrectos";
+
   const usuarioEncontrado = await Usuario.findOne({ email: user.email, activo: true });
   if (!usuarioEncontrado) {
-    return { success: false, message: "Usuario no encontrado o inactivo" };
+    return { success: false, message: invalidCredentialsMessage };
   }
 
-  // Validar contraseña
-  console.log("Password recibido:", user.password);
-console.log("Hash en DB:", usuarioEncontrado.password);
-const valid = bcryptjs.compareSync(user.password, usuarioEncontrado.password);
-console.log("Resultado compare:", valid);
+  const valid = bcryptjs.compareSync(user.password, usuarioEncontrado.password);
   if (!valid) {
-    return { success: false, message: "Contraseña incorrecta" };
+    return { success: false, message: invalidCredentialsMessage };
   }
 
-  // Actualizar último login
   usuarioEncontrado.ultimoLogin = new Date();
   await usuarioEncontrado.save();
 
-  
-  // Retornar usuario sin contraseña
   const usuarioSinPW = await Usuario.findById(usuarioEncontrado._id).select("-password");
 
   return { success: true, message: "Login exitoso", user: usuarioSinPW };
