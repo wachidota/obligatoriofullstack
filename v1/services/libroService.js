@@ -6,6 +6,29 @@ import mongoose from "mongoose";
 import { isValidObjectId } from "mongoose";
 import 'dotenv/config';
 
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const validarTituloDisponible = async (titulo, libroId = null) => {
+    const query = {
+        titulo: {
+            $regex: `^${escapeRegex(titulo.trim())}$`,
+            $options: "i"
+        },
+        activo: true
+    };
+
+    if (libroId) {
+        query._id = { $ne: libroId };
+    }
+
+    const libroExistente = await Libro.findOne(query);
+    if (libroExistente) {
+        const error = new Error("Ya existe un libro con ese titulo");
+        error.status = 409;
+        throw error;
+    }
+};
+
 export const createLibroService =
 async (
     titulo,
@@ -29,6 +52,8 @@ async (
 
         throw error;
     }
+
+    await validarTituloDisponible(titulo);
 
     const LIMITE_LIBRO =
         parseInt(process.env.LIMITE_LIBRO);
@@ -69,7 +94,7 @@ async (
     }
 
     const libro = new Libro({
-        titulo,
+        titulo: titulo.trim(),
         autor: autorId,
         categoriaLista: categoriaLista,
         descripcion,
@@ -149,7 +174,8 @@ export const updateLibroService = async (id, updates, usuarioId) => {
     const updateData = {};
 
     if (updates.titulo !== undefined) {
-        updateData.titulo = updates.titulo;
+        await validarTituloDisponible(updates.titulo, id);
+        updateData.titulo = updates.titulo.trim();
     }
 
     if (updates.descripcion !== undefined) {
